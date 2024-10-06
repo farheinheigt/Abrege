@@ -44,8 +44,12 @@ This Chrome/Firefox/Edge/Brave extension allows users to select text and search 
 ## Usage
 
 1. **Right-click** on any selected text in your browser.
+
+   ![1728192855326](image/README/1728192855326.png)
 2. **Select the ChatGPT Context Search** sub-menu from the context menu.
 3. Choose from one of the available options (e.g., "Explain," "Summarize," "Define"). This will open a new window with the search performed on ChatGPT.
+
+   ![1728192919095](image/README/1728192919095.png)
 4. **Temporary Mode** (default): This mode appends `&temporary-chat=true` to the URL, which is useful for temporary sessions.
 5. **Normal Mode** : Switch to this mode from the extension’s options page to perform normal searches and hence you can see that in your chat gpt history.
 
@@ -57,12 +61,17 @@ This Chrome/Firefox/Edge/Brave extension allows users to select text and search 
 
 1. Click on the extension icon and open the options page.
 2. From the options page, you can:
+
+   ![1728192961526](image/README/1728192961526.png)
+
    * **Add** new commands to the context menu.
    * **Edit** existing commands.
    * **Delete** commands you no longer need.
 3. The context menu will be updated accordingly after saving changes.
 
 ### Switch Between Temporary and Normal Mode
+
+![1728193025307](image/README/1728193025307.png)
 
 * Navigate to the extension's **Options Page** (from the extension icon).
 * Select either **Normal Mode** or  **Temporary Mode** . The extension will use the selected mode for all future searches.
