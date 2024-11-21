@@ -28,6 +28,16 @@
             font-size: 14px;
             margin-bottom: 20px;
         }
+        label {
+            display: flex; /* Flexbox for inline checkbox and text */
+            align-items: center; /* Center align items vertically */
+            margin-bottom: 15px; /* Space below each label */
+            font-size: 14px; /* Smaller font size for compactness */
+            color: #555;
+        }
+        input[type="checkbox"] {
+            margin-right: 8px; /* Space between checkbox and label text */
+        }
         button {
             background-color: #4CAF50;
             color: white;
@@ -45,7 +55,12 @@
 <body>
     <h3>Customize Your Prompt</h3>
     <textarea id="prompt" placeholder="Enter your custom prompt here...">Summarize the content of this page:</textarea>
-    <br>
+    
+    <label>
+        <input type="checkbox" id="temporary-mode-toggle">
+        Use Temporary Mode
+    </label>
+    
     <button id="save">Save</button>
 
     <script src="options.js"></script>

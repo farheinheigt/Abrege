@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Elements for managing commands
+  // Elements for managing commands and prompt settings
   const commandList = document.getElementById('command-list');
   const newCommandInput = document.getElementById('new-command');
   const addCommandButton = document.getElementById('add-command');
   const promptTextarea = document.getElementById('prompt');
   const savePromptButton = document.getElementById('save');
+  const temporaryModeToggle = document.getElementById('temporary-mode-toggle'); // New checkbox for temporary mode
 
   // Vérification des éléments avant d'utiliser addEventListener
   if (addCommandButton) {
@@ -28,8 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Vérification du mode actuel et chargement des éléments
-  chrome.storage.sync.get({ mode: 'temporary', prompt: "Summarize the content of this page:" }, (result) => {
+  // Chargement du prompt personnalisé, du mode temporaire, et du mode normal
+  chrome.storage.sync.get({ prompt: "Summarize the content of this page:", mode: 'temporary', temporaryMode: true }, (result) => {
+    // Charger le prompt
+    if (promptTextarea) {
+      promptTextarea.value = result.prompt;
+      console.log("Loaded prompt:", result.prompt);
+    }
+
+    // Charger le mode temporaire
+    if (temporaryModeToggle) {
+      temporaryModeToggle.checked = result.temporaryMode;
+      console.log("Loaded temporary mode:", result.temporaryMode);
+    }
+
+    // Charger le mode actuel (temporary ou normal)
     const modeElement = document.querySelector(`input[name="mode"][value="${result.mode}"]`);
     if (modeElement) {
       modeElement.checked = true;
@@ -37,24 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       console.error("Mode element not found in the DOM.");
     }
-
-    if (promptTextarea) {
-      promptTextarea.value = result.prompt;
-      console.log("Loaded prompt:", result.prompt);
-    }
   });
 
-  // Event listener for saving the custom prompt
-  if (savePromptButton && promptTextarea) {
+  // Event listener for saving the custom prompt and temporary mode
+  if (savePromptButton && promptTextarea && temporaryModeToggle) {
     savePromptButton.addEventListener('click', () => {
       const newPrompt = promptTextarea.value.trim();
+      const isTemporaryMode = temporaryModeToggle.checked;
+
       if (newPrompt) {
-        chrome.storage.sync.set({ prompt: newPrompt }, () => {
+        chrome.storage.sync.set({ prompt: newPrompt, temporaryMode: isTemporaryMode }, () => {
           if (chrome.runtime.lastError) {
-            console.error("Error saving prompt:", chrome.runtime.lastError);
+            console.error("Error saving settings:", chrome.runtime.lastError);
           } else {
-            alert('Prompt saved successfully!');
+            alert('Settings saved successfully!');
             console.log("Prompt saved:", newPrompt);
+            console.log("Temporary mode saved:", isTemporaryMode);
             window.close(); // Close the options page after successful save
           }
         });

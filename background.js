@@ -45,10 +45,17 @@ chrome.contextMenus.onClicked.addListener((info) => {
 // Handle clicks on the extension icon
 chrome.action.onClicked.addListener((tab) => {
   if (tab.url) {
-    chrome.storage.sync.get({ prompt: "Summarize the content of this page:" }, (result) => {
+    chrome.storage.sync.get({ prompt: "Summarize the content of this page:", temporaryMode: true }, (result) => {
       const prompt = result.prompt;
       const encodedUrl = encodeURIComponent(tab.url);
-      const url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}&temporary-chat=true`;
+      let url;
+
+      // Determine if the summary should be temporary or not
+      if (result.temporaryMode) {
+        url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}&temporary-chat=true`;
+      } else {
+        url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}`;
+      }
 
       chrome.windows.create({
         url: url,
@@ -67,8 +74,8 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 function performSearch(selectedText, command) {
-  chrome.storage.sync.get({ mode: defaultMode }, (result) => {
-    const searchMode = result.mode;
+  chrome.storage.sync.get({ mode: defaultMode, temporaryMode: true }, (result) => {
+    const searchMode = result.temporaryMode ? 'temporary' : 'normal';
     const encodedText = encodeURIComponent(selectedText);
     let url;
 
