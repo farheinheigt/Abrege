@@ -1,20 +1,65 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Elements for managing commands and prompt settings
+  // Elements for managing commands
   const commandList = document.getElementById('command-list');
   const newCommandInput = document.getElementById('new-command');
   const addCommandButton = document.getElementById('add-command');
   const promptTextarea = document.getElementById('prompt');
   const savePromptButton = document.getElementById('save');
-  const temporaryModeToggle = document.getElementById('temporary-mode-toggle'); // New checkbox for temporary mode
+  const toggleCheckbox = document.getElementById('temporary-mode-toggle');
 
-  // Vérification des éléments avant d'utiliser addEventListener
+  const defaultCommands = [
+    { id: "explain", title: "Explain" },
+    { id: "summarize", title: "Summarize" },
+    { id: "define", title: "Define" }
+  ];
+
+  // Load current mode, prompt, and commands
+  chrome.storage.sync.get({ commands: defaultCommands, mode: 'temporary', prompt: "Summarize the content of this page:", temporaryMode: true }, (result) => {
+    const modeElement = document.querySelector(`input[name="mode"][value="${result.mode}"]`);
+    if (modeElement) {
+      modeElement.checked = true;
+      console.log("Loaded mode:", result.mode);
+    } else {
+      console.error("Mode element not found in the DOM.");
+    }
+
+    if (promptTextarea) {
+      promptTextarea.value = result.prompt;
+      console.log("Loaded prompt:", result.prompt);
+    }
+
+    if (toggleCheckbox) {
+      toggleCheckbox.checked = result.temporaryMode;
+    }
+
+    if (commandList) {
+      commandList.innerHTML = '';
+      result.commands.forEach((command, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${command.title} 
+          <button data-index="${index}" class="delete-btn">Delete</button>
+          <button data-index="${index}" class="edit-btn">Edit</button>
+        `;
+        commandList.appendChild(li);
+      });
+    }
+  });
+
+  // Event listener for adding a new command
   if (addCommandButton) {
-    // Event listener for adding a new command
     addCommandButton.addEventListener('click', () => {
       const newCommand = newCommandInput ? newCommandInput.value.trim() : '';
       if (newCommand) {
-        chrome.storage.sync.get({ commands: [] }, (result) => {
+        chrome.storage.sync.get({ commands: defaultCommands }, (result) => {
           const commands = result.commands;
+
+          // Vérifier si le titre du prompt existe déjà
+          if (commands.some(command => command.title.toLowerCase() === newCommand.toLowerCase())) {
+            alert("Command already exists!");
+            return;
+          }
+
           commands.push({ id: newCommand.toLowerCase(), title: newCommand });
           chrome.storage.sync.set({ commands }, () => {
             chrome.runtime.sendMessage({ updateContextMenu: true });
@@ -29,77 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Chargement du prompt personnalisé, du mode temporaire, et du mode normal
-  chrome.storage.sync.get({ prompt: "Summarize the content of this page:", mode: 'temporary', temporaryMode: true }, (result) => {
-    // Charger le prompt
-    if (promptTextarea) {
-      promptTextarea.value = result.prompt;
-      console.log("Loaded prompt:", result.prompt);
-    }
-
-    // Charger le mode temporaire
-    if (temporaryModeToggle) {
-      temporaryModeToggle.checked = result.temporaryMode;
-      console.log("Loaded temporary mode:", result.temporaryMode);
-    }
-
-    // Charger le mode actuel (temporary ou normal)
-    const modeElement = document.querySelector(`input[name="mode"][value="${result.mode}"]`);
-    if (modeElement) {
-      modeElement.checked = true;
-      console.log("Loaded mode:", result.mode);
-    } else {
-      console.error("Mode element not found in the DOM.");
-    }
-  });
-
-  // Event listener for saving the custom prompt and temporary mode
-  if (savePromptButton && promptTextarea && temporaryModeToggle) {
-    savePromptButton.addEventListener('click', () => {
-      const newPrompt = promptTextarea.value.trim();
-      const isTemporaryMode = temporaryModeToggle.checked;
-
-      if (newPrompt) {
-        chrome.storage.sync.set({ prompt: newPrompt, temporaryMode: isTemporaryMode }, () => {
-          if (chrome.runtime.lastError) {
-            console.error("Error saving settings:", chrome.runtime.lastError);
-          } else {
-            alert('Settings saved successfully!');
-            console.log("Prompt saved:", newPrompt);
-            console.log("Temporary mode saved:", isTemporaryMode);
-            window.close(); // Close the options page after successful save
-          }
-        });
-      } else {
-        alert("Please enter a valid prompt before saving.");
-      }
-    });
-  }
-
-  // Load and display the commands
-  function loadCommands() {
-    chrome.storage.sync.get({ commands: [] }, (result) => {
-      if (commandList) {
-        commandList.innerHTML = '';
-        result.commands.forEach((command, index) => {
-          const li = document.createElement('li');
-          li.innerHTML = `
-            ${command.title} 
-            <button data-index="${index}" class="delete-btn">Delete</button>
-            <button data-index="${index}" class="edit-btn">Edit</button>
-          `;
-          commandList.appendChild(li);
-        });
-      }
-    });
-  }
-
   // Event listener for deleting a command
   if (commandList) {
     commandList.addEventListener('click', (e) => {
       if (e.target.classList.contains('delete-btn')) {
         const index = parseInt(e.target.dataset.index);
-        chrome.storage.sync.get({ commands: [] }, (result) => {
+        chrome.storage.sync.get({ commands: defaultCommands }, (result) => {
           const commands = result.commands;
           commands.splice(index, 1); // Remove the selected command
           chrome.storage.sync.set({ commands }, () => {
@@ -112,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (e.target.classList.contains('edit-btn')) {
         const index = parseInt(e.target.dataset.index);
-        chrome.storage.sync.get({ commands: [] }, (result) => {
+        chrome.storage.sync.get({ commands: defaultCommands }, (result) => {
           const commands = result.commands;
           const newTitle = prompt("Edit command title", commands[index].title);
           if (newTitle) {
@@ -129,6 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Event listener for saving the custom prompt
+  if (savePromptButton && promptTextarea) {
+    savePromptButton.addEventListener('click', () => {
+      const newPrompt = promptTextarea.value.trim();
+      if (newPrompt) {
+        chrome.storage.sync.set({ prompt: newPrompt }, () => {
+          if (chrome.runtime.lastError) {
+            console.error("Error saving prompt:", chrome.runtime.lastError);
+          } else {
+            alert('Prompt saved successfully!');
+            console.log("Prompt saved:", newPrompt);
+            window.close(); // Close the options page after successful save
+          }
+        });
+      } else {
+        alert("Please enter a valid prompt before saving.");
+      }
+    });
+  }
+
   // Event listener for changing mode
   document.querySelectorAll('input[name="mode"]').forEach((input) => {
     input.addEventListener('change', (e) => {
@@ -138,6 +138,34 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // Event listener for temporary mode toggle
+  if (toggleCheckbox) {
+    toggleCheckbox.addEventListener('change', () => {
+      const temporaryMode = toggleCheckbox.checked;
+      chrome.storage.sync.set({ temporaryMode }, () => {
+        console.log("Temporary mode saved:", temporaryMode);
+      });
+    });
+  }
+
+  // Load and display the commands
+  function loadCommands() {
+    chrome.storage.sync.get({ commands: defaultCommands }, (result) => {
+      if (commandList) {
+        commandList.innerHTML = '';
+        result.commands.forEach((command, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${command.title} 
+            <button data-index="${index}" class="delete-btn">Delete</button>
+            <button data-index="${index}" class="edit-btn">Edit</button>
+          `;
+          commandList.appendChild(li);
+        });
+      }
+    });
+  }
 
   // Load the commands when the options page is opened
   loadCommands();
