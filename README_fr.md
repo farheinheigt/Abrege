@@ -1,6 +1,10 @@
-# Extension de Résumé d'URL ChatGPT
+# ABRÈGE - Résumez Vos Lectures
 
-Cette extension te permet de résumer rapidement le contenu d'une page web ou d'un texte sélectionné en utilisant ChatGPT. En cliquant sur l'icône de l'extension, l'URL de la page courante est envoyée à ChatGPT pour obtenir un résumé. De plus, tu peux sélectionner n'importe quel texte sur une page web et utiliser le menu contextuel pour obtenir un résumé généré par ChatGPT.
+ABRÈGE te permet de résumer rapidement le contenu d'une page web ou d'un texte sélectionné en utilisant ChatGPT. Le but est de t'aider à abréger tes lectures, en particulier lors de ta veille technologique. En cliquant sur l'icône de l'extension, l'URL de la page courante est envoyée à ChatGPT pour obtenir un résumé. De plus, tu peux sélectionner n'importe quel texte sur une page web et utiliser le menu contextuel pour obtenir un résumé généré par ChatGPT.
+
+## Remerciements
+
+ABRÈGE est un fork d'un projet initialement développé par Bhashkar Kumar Gupta. Le travail original a fourni la base de ce projet, et tout le mérite revient à Bhashkar Kumar Gupta pour le développement initial et l'inspiration. Merci pour cette grande contribution à la communauté open source !
 
 ## Fonctionnalités
 
@@ -23,7 +27,7 @@ Cette extension te permet de résumer rapidement le contenu d'une page web ou d'
 
 ## Localisation
 
-Une version traduite du README est disponible en anglais dans le dépôt sous le nom `README_en.md`. Cela fournit un guide localisé pour les utilisateurs anglophones.
+Une version traduite du README est disponible en anglais dans le dépôt sous le nom `[README_en.md](README_en.md)`. Cela fournit un guide localisé pour les utilisateurs anglophones.
 
 ## Permissions
 
