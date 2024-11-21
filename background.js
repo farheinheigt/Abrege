@@ -50,21 +50,20 @@ chrome.action.onClicked.addListener((tab) => {
       const encodedUrl = encodeURIComponent(tab.url);
       let url;
 
-      // Determine if the summary should be temporary or not
+      // Déterminer si le résumé doit être temporaire ou non
       if (result.temporaryMode) {
         url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}&temporary-chat=true`;
       } else {
         url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}`;
       }
 
-      chrome.windows.create({
+      // Ouvrir un nouvel onglet avec l'URL au lieu d'une fenêtre popup
+      chrome.tabs.create({
         url: url,
-        type: "popup",
-        width: 500,
-        height: 700
-      }, (newWindow) => {
+        active: true
+      }, (newTab) => {
         if (chrome.runtime.lastError) {
-          console.error("Error creating new window: ", chrome.runtime.lastError);
+          console.error("Error creating new tab: ", chrome.runtime.lastError);
         }
       });
     });
@@ -72,6 +71,7 @@ chrome.action.onClicked.addListener((tab) => {
     console.error("No URL found for the current tab");
   }
 });
+
 
 function performSearch(selectedText, command) {
   chrome.storage.sync.get({ mode: defaultMode, temporaryMode: true }, (result) => {
