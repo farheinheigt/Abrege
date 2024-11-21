@@ -8,6 +8,13 @@ ABRÈGE est un fork d'un projet initialement développé par Bhashkar Kumar Gupt
 
 ## Fonctionnalités
 
+- **Sous-menus contextuels avec des prompts personnalisés** : ABRÈGE te permet de créer des sous-menus dans le menu contextuel du navigateur pour différentes actions. Ces sous-menus peuvent utiliser des prompts personnalisés, chacun ayant un objectif spécifique. Par exemple :
+  - **Explain** : Sélectionne du texte et choisis "Explain" pour demander à ChatGPT une explication détaillée.
+  - **Summarize** : Sélectionne du texte et choisis "Summarize" pour demander un résumé rapide.
+  - **Define** : Sélectionne un terme et choisis "Define" pour obtenir sa définition.
+
+Chaque commande peut être personnalisée via un prompt spécifique, te permettant ainsi d'utiliser ABRÈGE de manière flexible selon tes besoins lors de ta veille technologique.
+
 - **Résumé de l'URL de la Page** : Clique sur l'icône de l'extension pour résumer le contenu de la page courante.
 - **Résumé du Texte Sélectionné** : Sélectionne un texte sur une page, fais un clic droit, et choisis "Résumer avec ChatGPT" dans le menu contextuel.
 - **Prompt Personnalisé** : Personnalise le prompt utilisé pour le résumé via la page des options de l'extension.
