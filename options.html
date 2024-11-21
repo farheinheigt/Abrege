@@ -17,9 +17,11 @@
         h3 {
             color: #333;
             margin-bottom: 10px;
+            text-align: center;
+            font-size: 24px;
         }
         textarea {
-            width: 100%;
+            width: calc(100% - 20px);
             height: 100px;
             padding: 10px;
             border: 1px solid #ddd;
@@ -39,16 +41,29 @@
             margin-right: 8px;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #bd93f9;
             color: white;
             border: none;
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 5px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #a393e3;
+        }
+        .delete-btn {
+            background-color: #ff5555;
+        }
+        .delete-btn:hover {
+            background-color: #ff4444;
+        }
+        .edit-btn {
+            background-color: #ffb86c;
+        }
+        .edit-btn:hover {
+            background-color: #ff9e4c;
         }
         .summary-settings {
             padding: 15px;
@@ -77,7 +92,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: move;
         }
         .command-title {
             flex: 1;
@@ -86,30 +100,25 @@
 </head>
 <body>
     <h3>Configuration de l'Extension ABRÈGE</h3>
-    
     <div class="summary-settings">
-        <h4>Résumé des URLs</h4>
+        <h3>Résumé des URLs</h3>
         <textarea id="prompt" placeholder="Enter your custom prompt here...">Summarize the content of this page:</textarea>
         
         <label>
             <input type="checkbox" id="temporary-mode-toggle">
-            Utiliser le Mode Éphémère
+            Use Temporary Mode
         </label>
         
         <button id="save">Save</button>
     </div>
-
+    
     <div class="commands-section">
-        <h4>Gérer les Commandes</h4>
-        <ul id="command-list">
-            <!-- Les commandes seront ajoutées ici -->
-        </ul>
-        <div>
-            <input type="text" id="new-command" placeholder="New command title" />
-            <button id="add-command">Add Command</button>
-        </div>
+        <h3>Gérer les Commandes</h3>
+        <ul id="command-list"></ul>
+        <input type="text" id="new-command" placeholder="New command title">
+        <button id="add-command">Add Command</button>
     </div>
-
+    
     <script src="Sortable.min.js"></script>
     <script src="options.js"></script>
 </body>
