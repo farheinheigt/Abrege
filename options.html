@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Your Prompt</title>
+    <title>Configuration de l'Extension ABRÈGE</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px; /* J'ai augmenté la largeur pour inclure toutes les options */
+            max-width: 600px;
         }
         h3 {
             color: #333;
@@ -29,14 +29,14 @@
             margin-bottom: 20px;
         }
         label {
-            display: flex; /* Flexbox for inline checkbox and text */
-            align-items: center; /* Center align items vertically */
-            margin-bottom: 15px; /* Space below each label */
-            font-size: 14px; /* Smaller font size for compactness */
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
             color: #555;
         }
         input[type="checkbox"] {
-            margin-right: 8px; /* Space between checkbox and label text */
+            margin-right: 8px;
         }
         button {
             background-color: #4CAF50;
@@ -46,10 +46,22 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px; /* Space above buttons */
         }
         button:hover {
             background-color: #45a049;
+        }
+        .summary-settings {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+        .commands-section {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
         }
         ul {
             list-style-type: none;
@@ -61,34 +73,44 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            cursor: move;
+        }
+        .command-title {
+            flex: 1;
         }
     </style>
 </head>
 <body>
-    <h3>Customize Your Prompt</h3>
-    <textarea id="prompt" placeholder="Enter your custom prompt here...">Summarize the content of this page:</textarea>
+    <h3>Configuration de l'Extension ABRÈGE</h3>
     
-    <label>
-        <input type="checkbox" id="temporary-mode-toggle">
-        Use Temporary Mode
-    </label>
-    
-    <button id="save">Save</button>
-
-    <h3>Manage Commands</h3>
-    <ul id="command-list">
-        <!-- Commands will be dynamically populated here -->
-    </ul>
-
-    <div>
-        <input type="text" id="new-command" placeholder="New command title" />
-        <button id="add-command">Add Command</button>
+    <div class="summary-settings">
+        <h4>Résumé des URLs</h4>
+        <textarea id="prompt" placeholder="Enter your custom prompt here...">Summarize the content of this page:</textarea>
+        
+        <label>
+            <input type="checkbox" id="temporary-mode-toggle">
+            Utiliser le Mode Éphémère
+        </label>
+        
+        <button id="save">Save</button>
     </div>
 
+    <div class="commands-section">
+        <h4>Gérer les Commandes</h4>
+        <ul id="command-list">
+            <!-- Les commandes seront ajoutées ici -->
+        </ul>
+        <div>
+            <input type="text" id="new-command" placeholder="New command title" />
+            <button id="add-command">Add Command</button>
+        </div>
+    </div>
+
+    <script src="Sortable.min.js"></script>
     <script src="options.js"></script>
 </body>
 </html>
