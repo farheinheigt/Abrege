@@ -1,76 +1,39 @@
-const defaultCommands = [
-  { id: "explain", title: "Explain" },
-  { id: "summarize", title: "Summarize" },
-  { id: "define", title: "Define" }
-];
+// Default prompt to summarize URL
+const defaultPrompt = "Summarize the content of this page:";
 
-const defaultMode = "temporary";  // Default mode
-
-// Load commands from storage or use defaults
+// Create context menu for text selection
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get({ commands: defaultCommands, mode: defaultMode }, (result) => {
-    createContextMenu(result.commands);
+  chrome.contextMenus.create({
+    id: "chatgpt-context",
+    title: "Summarize with ChatGPT",
+    contexts: ["selection"]
   });
 });
 
-function createContextMenu(commands) {
-  chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({
-      id: "chatgpt-search",
-      title: "Search with ChatGPT",
-      contexts: ["selection"]
-    });
+// Handle clicks on the context menu for selected text
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "chatgpt-context" && info.selectionText) {
+    chrome.storage.sync.get({ prompt: defaultPrompt }, (result) => {
+      const prompt = result.prompt;
+      const encodedText = encodeURIComponent(info.selectionText);
+      const url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedText}&temporary-chat=true`;
 
-    commands.forEach(command => {
-      chrome.contextMenus.create({
-        id: command.id,
-        parentId: "chatgpt-search",
-        title: command.title,
-        contexts: ["selection"]
+      chrome.windows.create({
+        url: url,
+        type: "popup",
+        width: 500,
+        height: 700
       });
     });
-  });
-}
-
-// Handle clicks on the context menu or extension icon
-chrome.contextMenus.onClicked.addListener((info) => {
-  performSearch(info.selectionText, info.menuItemId);
+  }
 });
 
-// Listen for extension icon click to show the same options
+// Handle clicks on the extension icon
 chrome.action.onClicked.addListener((tab) => {
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    function: showContextMenu
-  });
-});
-
-function showContextMenu() {
-  const selectedText = window.getSelection().toString().trim();
-  if (selectedText) {
-    chrome.runtime.sendMessage({ type: "performSearch", selectedText: selectedText });
-  } else {
-    alert("Please select some text to search.");
-  }
-}
-
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.type === "performSearch") {
-    performSearch(message.selectedText);
-  }
-});
-
-function performSearch(selectedText, command) {
-  chrome.storage.sync.get({ mode: defaultMode }, (result) => {
-    const searchMode = result.mode;
-    const encodedText = encodeURIComponent(selectedText);
-    let url;
-
-    if (searchMode === "temporary") {
-      url = `https://chatgpt.com/?model=gpt-4o&q=${command} ${encodedText}&temporary-chat=true`;
-    } else {
-      url = `https://chatgpt.com/?model=gpt-4o&q=${command} ${encodedText}`;
-    }
+  chrome.storage.sync.get({ prompt: defaultPrompt }, (result) => {
+    const prompt = result.prompt;
+    const encodedUrl = encodeURIComponent(tab.url);
+    const url = `https://chatgpt.com/?model=gpt-4o&q=${prompt} ${encodedUrl}&temporary-chat=true`;
 
     chrome.windows.create({
       url: url,
@@ -79,13 +42,4 @@ function performSearch(selectedText, command) {
       height: 700
     });
   });
-}
-
-// Listen for message to update the context menu
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.updateContextMenu) {
-    chrome.storage.sync.get({ commands: [] }, (result) => {
-      createContextMenu(result.commands);
-    });
-  }
 });
