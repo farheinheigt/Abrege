@@ -1,0 +1,30 @@
+# Ignore les fichiers système de macOS
+.DS_Store
+
+# Node modules et autres dépendances
+node_modules/
+npm-debug.log*
+yarn-error.log
+yarn-debug.log*
+
+# Fichiers générés par l'éditeur de code
+*.sublime-workspace
+*.sublime-project
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Autres fichiers potentiellement indésirables
+Thumbs.db
+*.bak
+*.swp
+*.tmp
+
+# Ignorer les fichiers de configuration du navigateur
+*.local
+
+# Extensions ou fichiers spécifiques
+*.zip
+*.tar.gz
